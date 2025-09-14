@@ -1,22 +1,54 @@
 {
-  "name": "frontend",
+  "name": "frontend-gestao-ingressos",
   "version": "1.0.0",
-  "main": "src/App.tsx",
+  "description": "Frontend para sistema de gestão de ingressos de eventos",
+  "private": true,
   "scripts": {
-    "start": "vite",
-    "build": "tsc",
-    "test": "cucumber-js"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "eject": "react-scripts eject"
   },
+  "keywords": ["eventos", "ingressos", "qr-code", "react", "typescript"],
+  "author": "Seu Nome",
+  "license": "MIT",
   "dependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.14.2",
+    "axios": "^1.4.0",
+    "react-qr-scanner": "^1.0.0-alpha.11",
+    "qrcode": "^1.5.3",
+    "react-hook-form": "^7.45.2",
+    "@hookform/resolvers": "^3.1.1",
+    "zod": "^3.21.4",
+    "react-query": "^3.39.3",
+    "date-fns": "^2.30.0",
+    "react-hot-toast": "^2.4.1"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "vite": "^4.0.0",
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
-    "cucumber": "^8.0.0",
-    "cucumber-js": "^8.0.0"
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@types/qrcode": "^1.5.1",
+    "typescript": "^5.1.6",
+    "react-scripts": "5.0.1",
+    "vitest": "^0.34.1",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/user-event": "^14.4.3",
+    "jsdom": "^22.1.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

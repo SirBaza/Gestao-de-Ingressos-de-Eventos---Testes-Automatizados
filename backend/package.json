@@ -1,18 +1,38 @@
 {
-  "name": "backend",
+  "name": "backend-gestao-ingressos",
   "version": "1.0.0",
-  "main": "src/app.ts",
+  "description": "Backend para sistema de gestão de ingressos de eventos",
+  "main": "dist/app.js",
   "scripts": {
-    "start": "ts-node src/app.ts",
     "build": "tsc",
-    "test": "ts-node tests/index.ts"
+    "start": "node dist/app.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage"
   },
+  "keywords": ["eventos", "ingressos", "qr-code", "typescript"],
+  "author": "Seu Nome",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
-    "sqlite3": "^5.1.6"
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "crypto": "^1.0.1",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "ts-node": "^10.9.1",
-    "typescript": "^5.0.0"
+    "@types/express": "^4.17.17",
+    "@types/cors": "^2.8.13",
+    "@types/bcryptjs": "^2.4.2",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/uuid": "^9.0.2",
+    "@types/node": "^20.4.5",
+    "typescript": "^5.1.6",
+    "ts-node-dev": "^2.0.0",
+    "vitest": "^0.34.1",
+    "supertest": "^6.3.3",
+    "@types/supertest": "^2.0.12"
   }
 }

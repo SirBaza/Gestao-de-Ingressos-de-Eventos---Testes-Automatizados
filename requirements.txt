@@ -1,0 +1,97 @@
+# Requisitos do Sistema - Gestão de Ingressos de Eventos
+# ========================================================
+
+# REQUISITOS OBRIGATÓRIOS
+# ------------------------
+Node.js >= 18.0.0
+npm >= 8.0.0
+
+# REQUISITOS OPCIONAIS (RECOMENDADOS)
+# -----------------------------------
+Git >= 2.30.0
+VS Code >= 1.70.0
+
+# DEPENDÊNCIAS DO BACKEND (package.json)
+# --------------------------------------
+# Produção:
+# - express: ^4.18.2          # Framework web para Node.js
+# - cors: ^2.8.5              # Middleware para CORS
+# - helmet: ^7.0.0            # Middleware de segurança
+# - bcryptjs: ^2.4.3          # Criptografia de senhas
+# - jsonwebtoken: ^9.0.2      # Autenticação JWT
+# - crypto: ^1.0.1            # Funções criptográficas
+# - uuid: ^9.0.0              # Geração de IDs únicos
+
+# Desenvolvimento:
+# - typescript: ^5.1.6        # Compilador TypeScript
+# - ts-node-dev: ^2.0.0       # Execução em desenvolvimento
+# - vitest: ^0.34.1           # Framework de testes
+# - supertest: ^6.3.3         # Testes de API
+# - @types/*                  # Definições de tipos TypeScript
+
+# DEPENDÊNCIAS DO FRONTEND (package.json)
+# ----------------------------------------
+# Produção:
+# - react: ^18.2.0            # Biblioteca principal React
+# - react-dom: ^18.2.0        # DOM React
+# - react-router-dom: ^6.14.2 # Roteamento SPA
+# - axios: ^1.4.0             # Cliente HTTP
+# - react-qr-scanner: ^1.0.0-alpha.11  # Scanner QR
+# - qrcode: ^1.5.3            # Geração de QR codes
+# - react-hook-form: ^7.45.2  # Formulários React
+# - zod: ^3.21.4              # Validação de schemas
+# - react-query: ^3.39.3      # Cache e sincronização de dados
+# - date-fns: ^2.30.0         # Manipulação de datas
+# - react-hot-toast: ^2.4.1   # Notificações
+
+# Desenvolvimento:
+# - @testing-library/react: ^13.4.0    # Testes de componentes
+# - @testing-library/jest-dom: ^5.17.0 # Matchers para DOM
+# - react-scripts: 5.0.1               # Scripts do Create React App
+# - vitest: ^0.34.1                    # Framework de testes
+# - jsdom: ^22.1.0                     # Ambiente DOM para testes
+
+# COMANDOS DE INSTALAÇÃO
+# ----------------------
+# Backend:
+# cd backend && npm install
+
+# Frontend:
+# cd frontend && npm install
+
+# COMANDOS DE EXECUÇÃO
+# --------------------
+# Backend (Desenvolvimento):
+# cd backend && npm run dev
+
+# Frontend (Desenvolvimento):
+# cd frontend && npm start
+
+# Testes:
+# cd backend && npm test
+# cd frontend && npm test
+
+# PORTS PADRÃO
+# ------------
+# Backend: http://localhost:3001
+# Frontend: http://localhost:3000
+
+# ESTRUTURA DE DADOS
+# ------------------
+# Armazenamento: Em memória (desenvolvimento)
+# Autenticação: JWT com bcryptjs
+# Validação QR: SHA256 hash
+# Formato QR: String única por ingresso
+
+# COMPATIBILIDADE
+# ---------------
+# Navegadores: Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
+# Sistemas: Windows 10+, macOS 10.15+, Ubuntu 18.04+
+# Mobile: iOS 14+, Android 8.0+
+
+# NOTAS IMPORTANTES
+# -----------------
+# - Este projeto NÃO usa Jest (conforme especificado)
+# - Este projeto NÃO usa Docker (conforme especificado)
+# - Todo código está em Português do Brasil
+# - Arquitetura preparada para migração para banco de dados real
