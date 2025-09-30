@@ -5,6 +5,23 @@ export class EventoService {
   private nextId = 1;
 
   criarEvento(evento: Omit<Evento, "id" | "criadoEm">): Evento {
+    // Validar campos obrigatórios
+    if (!evento.nome || evento.nome.trim() === "") {
+      throw new Error("Nome do evento é obrigatório");
+    }
+
+    if (!evento.data) {
+      throw new Error("Data do evento é obrigatória");
+    }
+
+    if (!evento.capacidadeTotal || evento.capacidadeTotal <= 0) {
+      throw new Error("Capacidade total deve ser maior que zero");
+    }
+
+    if (!evento.local || evento.local.trim() === "") {
+      throw new Error("Local do evento é obrigatório");
+    }
+
     // Validar se a data não está no passado
     const agora = new Date();
     agora.setHours(0, 0, 0, 0);
