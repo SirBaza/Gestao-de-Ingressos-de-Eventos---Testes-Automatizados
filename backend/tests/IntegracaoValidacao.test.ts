@@ -64,8 +64,7 @@ describe("Testes de Integração - API /validate", () => {
       const response = await request(app)
         .post("/validate")
         .send({
-          hash: ingresso.hash
-          // Não enviar payload para testar validação apenas com hash
+          hash: ingresso.hash,
         })
         .expect(200);
 
