@@ -3,70 +3,71 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "../src/App";
 import { apiService } from "../src/services/api";
+import * as apiModule from "../src/services/api";
 
-// Mock da API
-jest.mock("../src/services/api");
-const mockApiService = apiService as jest.Mocked<typeof apiService>;
+const mockApiService = {
+  criarCompra: (...args: any[]) => Promise.resolve(),
+  validarIngresso: (...args: any[]) => Promise.resolve(),
+};
 
-// Mock do QRComponent
-jest.mock("../src/components/QRComponent", () => {
-  return function QRComponent({ value }: { value: string }) {
-    return (
-      <div data-testid='qr-component'>
-        <div data-testid='qr-value'>{value}</div>
-        <canvas data-testid='qr-canvas' />
-      </div>
-    );
-  };
-});
+// @ts-ignore
+(apiModule as any).apiService = mockApiService;
 
-// Mock do Scanner
-jest.mock("../src/components/Scanner", () => {
-  return function Scanner({ onScan, onError, disabled }: any) {
-    return (
-      <div data-testid='scanner-mock' className={disabled ? "disabled" : ""}>
-        <input
-          data-testid='scanner-input'
-          placeholder='Digite o hash do QR code'
-          disabled={disabled}
-          onChange={(e) => {
-            if (e.target.value) {
-              onScan(e.target.value);
-            }
-          }}
-        />
-        <button
-          data-testid='scanner-error'
-          onClick={() => onError("Erro simulado do scanner")}
-          disabled={disabled}
-        >
-          Simular Erro Scanner
-        </button>
-        <button
-          data-testid='simulate-valid-qr'
-          onClick={() => onScan("hash_valido_123")}
-          disabled={disabled}
-        >
-          Simular QR Válido
-        </button>
-        <button
-          data-testid='simulate-invalid-qr'
-          onClick={() => onScan("hash_invalido_xyz")}
-          disabled={disabled}
-        >
-          Simular QR Inválido
-        </button>
-        <button
-          data-testid='simulate-used-qr'
-          onClick={() => onScan("hash_ja_usado_456")}
-          disabled={disabled}
-        >
-          Simular QR Já Usado
-        </button>
-      </div>
-    );
-  };
-});
+const QRComponentMock = ({ value }: { value: string }) => (
+  <div data-testid='qr-component'>
+    <div data-testid='qr-value'>{value}</div>
+    <canvas data-testid='qr-canvas' />
+  </div>
+);
+
+// @ts-ignore
+require("../src/components/QRComponent").default = QRComponentMock;
+
+const ScannerMock = ({ onScan, onError, disabled }: any) => (
+  <div data-testid='scanner-mock' className={disabled ? "disabled" : ""}>
+    <input
+      data-testid='scanner-input'
+      placeholder='Digite o hash do QR code'
+      disabled={disabled}
+      onChange={(e) => {
+        if (e.target.value) {
+          onScan(e.target.value);
+        }
+      }}
+    />
+    <button
+      data-testid='scanner-error'
+      onClick={() => onError("Erro simulado do scanner")}
+      disabled={disabled}
+    >
+      Simular Erro Scanner
+    </button>
+    <button
+      data-testid='simulate-valid-qr'
+      onClick={() => onScan("hash_valido_123")}
+      disabled={disabled}
+    >
+      Simular QR Válido
+    </button>
+    <button
+      data-testid='simulate-invalid-qr'
+      onClick={() => onScan("hash_invalido_xyz")}
+      disabled={disabled}
+    >
+      Simular QR Inválido
+    </button>
+    <button
+      data-testid='simulate-used-qr'
+      onClick={() => onScan("hash_ja_usado_456")}
+      disabled={disabled}
+    >
+      Simular QR Já Usado
+    </button>
+  </div>
+);
+
+// @ts-ignore
+require("../src/components/Scanner").default = ScannerMock;
 
 describe("E2E - Fluxos Completos do Sistema", () => {
   beforeEach(() => {
@@ -97,7 +98,7 @@ describe("E2E - Fluxos Completos do Sistema", () => {
         qrCodes: ["hash_valido_123", "hash_valido_456"],
       };
 
-      mockApiService.criarCompra.mockImplementation(
+      mockApiService.criarCompra(
         () =>
           new Promise((resolve) =>
             setTimeout(() => resolve(mockCompraResponse), 200)
@@ -180,9 +181,8 @@ describe("E2E - Fluxos Completos do Sistema", () => {
       const user = userEvent.setup();
 
       // Mock de erro na API
-      mockApiService.criarCompra.mockRejectedValueOnce(
-        new Error("Evento esgotado")
-      );
+      mockApiService.criarCompra = () =>
+        Promise.reject(new Error("Evento esgotado"));
 
       render(<App />);
 
@@ -246,7 +246,7 @@ describe("E2E - Fluxos Completos do Sistema", () => {
         dataValidacao: "2025-09-30T10:00:00.000Z",
       };
 
-      mockApiService.validarIngresso.mockImplementation(
+      mockApiService.validarIngresso(
         () =>
           new Promise((resolve) =>
             setTimeout(() => resolve(mockValidacaoResponse), 150)
@@ -316,9 +316,7 @@ describe("E2E - Fluxos Completos do Sistema", () => {
         error: "Ingresso não encontrado no sistema",
       };
 
-      mockApiService.validarIngresso.mockResolvedValueOnce(
-        mockValidacaoResponse
-      );
+      mockApiService.validarIngresso(mockValidacaoResponse);
 
       render(<App />);
 
@@ -363,9 +361,7 @@ describe("E2E - Fluxos Completos do Sistema", () => {
         error: "Ingresso já utilizado anteriormente",
       };
 
-      mockApiService.validarIngresso.mockResolvedValueOnce(
-        mockValidacaoResponse
-      );
+      mockApiService.validarIngresso(mockValidacaoResponse);
 
       render(<App />);
 
@@ -416,9 +412,7 @@ describe("E2E - Fluxos Completos do Sistema", () => {
         dataValidacao: "2025-09-30T10:00:00.000Z",
       };
 
-      mockApiService.validarIngresso.mockResolvedValueOnce(
-        mockValidacaoResponse
-      );
+      mockApiService.validarIngresso(mockValidacaoResponse);
 
       render(<App />);
 
