@@ -11,27 +11,55 @@ describe("E2E - Backend - Fluxos Completos", () => {
 
   describe("Fluxo E2E: Compra → Validação", () => {
     test("deve completar fluxo básico de compra e validação", async () => {
-      // === ETAPA 1: Buscar eventos disponíveis ===
+      // === ETAPA 1: Criar um evento para teste ===
+      const dataFutura = new Date();
+      dataFutura.setDate(dataFutura.getDate() + 30);
+
+      const novoEvento = {
+        nome: "Evento E2E Teste",
+        data: dataFutura.toISOString(),
+        capacidadeTotal: 50,
+        local: "Centro de Convenções E2E",
+      };
+
+      const eventoResponse = await request(app)
+        .post("/events")
+        .send(novoEvento)
+        .expect(201);
+
+      expect(eventoResponse.body.id).toBeDefined();
+
+      const evento = eventoResponse.body;
+
+      // === ETAPA 1.5: Criar tipo de ingresso ===
+      const tipoIngresso = {
+        nome: "Ingresso Geral",
+        preco: 50.0,
+        quantidadeInicial: 50,
+      };
+
+      const tipoIngressoResponse = await request(app)
+        .post(`/events/${evento.id}/tickets`)
+        .send(tipoIngresso)
+        .expect(201);
+
+      expect(tipoIngressoResponse.body.id).toBeDefined();
+
+      const tipoIngressoCriado = tipoIngressoResponse.body;
+
+      // === ETAPA 2: Buscar eventos para confirmar ===
       const eventosResponse = await request(app).get("/events").expect(200);
-
       expect(Array.isArray(eventosResponse.body)).toBe(true);
+      expect(eventosResponse.body.length).toBeGreaterThan(0);
 
-      if (eventosResponse.body.length === 0) {
-        // Se não há eventos, pular o teste ou criar um
-        console.log("Nenhum evento encontrado para teste E2E");
-        return;
-      }
-
-      const evento = eventosResponse.body[0];
-
-      // === ETAPA 2: Realizar compra ===
+      // === ETAPA 3: Realizar compra ===
       const dadosCompra = {
         nome: "Maria Silva E2E",
         email: "maria.e2e@teste.com",
         matricula: "E2E001",
         quantidade: 1,
         eventoId: evento.id,
-        tipoIngressoId: 1,
+        tipoIngressoId: tipoIngressoCriado.id,
       };
 
       const compraResponse = await request(app)
@@ -43,12 +71,12 @@ describe("E2E - Backend - Fluxos Completos", () => {
         expect(compraResponse.status).toBe(201);
       }
 
-      expect(compraResponse.body.sucesso).toBe(true);
+      expect(compraResponse.body.compra).toBeDefined();
       expect(compraResponse.body.ingressos).toHaveLength(1);
 
       const hashIngresso = compraResponse.body.ingressos[0].hash;
 
-      // === ETAPA 3: Validar ingresso ===
+      // === ETAPA 4: Validar ingresso ===
       const validacaoResponse = await request(app)
         .post("/validate")
         .send({ hash: hashIngresso })
@@ -57,13 +85,15 @@ describe("E2E - Backend - Fluxos Completos", () => {
       expect(validacaoResponse.body.valido).toBe(true);
       expect(validacaoResponse.body.comprador.nome).toBe("Maria Silva E2E");
 
-      // === ETAPA 4: Tentar validar novamente (deve falhar) ===
+      // === ETAPA 5: Tentar validar novamente (deve falhar) ===
       const validacaoRepetidaResponse = await request(app)
         .post("/validate")
         .send({ hash: hashIngresso })
-        .expect(400);
+        .expect(409);
 
-      expect(validacaoRepetidaResponse.body.valido).toBe(false);
+      expect(validacaoRepetidaResponse.body.error).toBe(
+        "Ingresso já utilizado"
+      );
     });
 
     test("deve tratar hash inválido", async () => {
@@ -74,8 +104,7 @@ describe("E2E - Backend - Fluxos Completos", () => {
         .send({ hash: hashInvalido })
         .expect(404);
 
-      expect(validacaoResponse.body.valido).toBe(false);
-      expect(validacaoResponse.body.error).toMatch(/não encontrado/i);
+      expect(validacaoResponse.body.error).toBe("Ingresso não encontrado");
     });
 
     test("deve tratar compra com dados inválidos", async () => {
