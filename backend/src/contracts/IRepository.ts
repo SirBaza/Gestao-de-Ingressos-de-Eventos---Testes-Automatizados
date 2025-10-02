@@ -1,8 +1,3 @@
-/**
- * Interface genérica para repositórios
- * Define operações CRUD básicas que podem ser implementadas por qualquer repositório
- * @template T - Tipo da entidade que o repositório gerencia
- */
 export interface IRepository<T> {
   findById(id: number): Promise<T | null>;
   findAll(): Promise<T[]>;
